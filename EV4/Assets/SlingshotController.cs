@@ -72,7 +72,7 @@ public class SlingshotController : MonoBehaviour
             _currentRb.velocity = Vector2.zero;
         }
 
-        // La velocidad de lanzamiento apunta en la dirección opuesta
+        // La velocidad de lanzamiento apunta en la direcciï¿½n opuesta
         _currentLaunchVelocity = -pullDir * launchPower;
     }
 
@@ -84,7 +84,7 @@ public class SlingshotController : MonoBehaviour
             _currentRb.velocity = _currentLaunchVelocity;
             _currentRb = null;
 
-            // Podrías spawnear el siguiente después de un delay o cuando el anterior se detenga
+            
             Invoke(nameof(SpawnNewProjectile), 1.5f);
         }
     }

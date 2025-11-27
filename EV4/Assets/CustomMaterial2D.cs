@@ -4,7 +4,7 @@ using PUCV.PhysicEngine2D;
 public class CustomMaterial2D : MonoBehaviour
 {
     [Range(0f, 1.2f)]
-    public float bounciness = 0.5f;   // 1 = perfectamente elástico, <1 = inelástico
+    public float bounciness = 0.5f;   // 1 = perfectamente elastico, <1 = normal
 
     [Range(0f, 1f)]
     public float friction = 0.2f;

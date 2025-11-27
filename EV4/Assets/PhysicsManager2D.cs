@@ -7,17 +7,17 @@ namespace PUCV.PhysicEngine2D
     {
         private static PhysicsManager2D _instance;
 
-        // Todos los colliders registrados en el motor
+        
         private readonly List<CustomCollider2D> _colliders = new List<CustomCollider2D>();
 
-        // Colisiones detectadas en el frame actual
+        // Colisiones detectadas en el frame 
         private List<InternalCollisionInfo> _currentCollisionList = new List<InternalCollisionInfo>();
 
         [Header("Gravedad global")]
         public Vector2 globalGravity = new Vector2(0f, -9.81f);
 
-        // Áreas de flotabilidad (lagos)
-        private static readonly List<BuoyancyArea2D> _buoyancyAreas = new List<BuoyancyArea2D>();
+        // areas de flotabilidad
+        private static List<BuoyancyArea2D> _buoyancyAreas = new List<BuoyancyArea2D>();
 
         private void Awake()
         {
@@ -32,7 +32,7 @@ namespace PUCV.PhysicEngine2D
             DontDestroyOnLoad(_instance);
         }
 
-        // ================== Registro de colliders ==================
+     
 
         public static void RegisterCollider(CustomCollider2D customCollider2D)
         {
@@ -49,7 +49,7 @@ namespace PUCV.PhysicEngine2D
             _instance._colliders.Remove(customCollider2D);
         }
 
-        // ================== Registro de áreas de flotabilidad ==================
+       
 
         public static void RegisterBuoyancyArea(BuoyancyArea2D area)
         {
@@ -64,20 +64,20 @@ namespace PUCV.PhysicEngine2D
             _buoyancyAreas.Remove(area);
         }
 
-        // ================== Ciclo de simulación ==================
+        
 
         private void FixedUpdate()
         {
             float deltaTime = Time.fixedDeltaTime;
 
             StepApplyGlobalForces(deltaTime);                  // Gravedad + flotabilidad
-            StepCalculateCollisions(deltaTime);                // Detección SAT
-            StepApplyMTVAndReflectionToRigidbodies(deltaTime); // Corrección de penetración + rebote
-            StepApplyMovementToRigidbodies(deltaTime);         // Integración de posición
-            StepInformCollisions(deltaTime);                   // Eventos de colisión
+            StepCalculateCollisions(deltaTime);                // Deteccion SAT
+            StepApplyMTVAndReflectionToRigidbodies(deltaTime); // Correccion de penetracion + rebote
+            StepApplyMovementToRigidbodies(deltaTime);         // Integracion de posicion
+            StepInformCollisions(deltaTime);                   // Eventos de colision
         }
 
-        // ---------- 1) Fuerzas globales ----------
+        // Fuerzas globales ----------
 
         private void StepApplyGlobalForces(float deltaTime)
         {
@@ -103,30 +103,30 @@ namespace PUCV.PhysicEngine2D
             rb.velocity += globalGravity * dt;
         }
 
-        private void ApplyBuoyancyIfAny(CustomRigidbody2D rb, float dt)
-        {
-            if (_buoyancyAreas == null || _buoyancyAreas.Count == 0) return;
+      private void ApplyBuoyancyIfAny(CustomRigidbody2D rb, float dt)
+    {
+    if (_buoyancyAreas == null || _buoyancyAreas.Count == 0) return;
 
-            Vector2 pos = rb.GetWorldPosition();
+    Vector2 pos = rb.GetWorldPosition();
 
-            foreach (var area in _buoyancyAreas)
-            {
-                if (area == null) continue;
-                if (!area.IsInside(pos)) continue;
+    foreach (var area in _buoyancyAreas)
+    {
+        if (area == null) continue;
+        if (!area.IsInside(pos)) continue;
 
-                Vector2 force = area.ComputeBuoyancyForce(rb);
-                rb.velocity += force * dt; // masa = 1
-            }
-        }
+        Vector2 force = area.ComputeBuoyancyForce(rb);
+        rb.velocity += force * dt;
+    }
+    }
 
-        // ---------- 2) Detección de colisiones ----------
+        //Deteccion de colisiones 
 
         private void StepCalculateCollisions(float deltaTime)
         {
             // Usa SAT para detectar colisiones entre todos los colliders
             var currCollisionList = SAT2DMath.DetectCollisions(_colliders);
 
-            // Marcar si la colisión ya existía en el frame anterior
+            // Marcar si la colision ya existoa en el frame anterior
             foreach (var currCollisionInfo in currCollisionList)
             {
                 currCollisionInfo.wasCollidedLastFrame = false;
@@ -152,7 +152,7 @@ namespace PUCV.PhysicEngine2D
             _currentCollisionList = currCollisionList;
         }
 
-        // ---------- 3) Aplicar MTV y reflexión ----------
+        // Aplicar MTV y reflexion
 
         private void StepApplyMTVAndReflectionToRigidbodies(float deltaTime)
         {
@@ -161,7 +161,7 @@ namespace PUCV.PhysicEngine2D
                 var rbA = currCollisionInfo.bodyARigidbody;
                 var rbB = currCollisionInfo.bodyBRigidbody;
 
-                // Mover según MTV (solo cuerpos no kinematic)
+                // Mover segun MTV (solo cuerpos no kinematic)
                 if (currCollisionInfo.hasMTV)
                 {
                     if (rbA != null && !rbA.isKinematic)
@@ -179,7 +179,7 @@ namespace PUCV.PhysicEngine2D
                     }
                 }
 
-                // Rebote elástico / inelástico usando CustomMaterial2D
+                // Rebote elastico / normal usando CustomMaterial2D
                 float e = CustomMaterial2D.GetCombinedBounciness(
                     currCollisionInfo.bodyACollider,
                     currCollisionInfo.bodyBCollider
@@ -216,7 +216,7 @@ namespace PUCV.PhysicEngine2D
             }
         }
 
-        // ---------- 4) Movimiento ----------
+     
 
         private void StepApplyMovementToRigidbodies(float deltaTime)
         {
@@ -236,13 +236,13 @@ namespace PUCV.PhysicEngine2D
             }
         }
 
-        // ---------- 5) Eventos de colisión ----------
+       
 
         private void StepInformCollisions(float deltaTime)
         {
             foreach (var currCollisionInfo in _currentCollisionList)
             {
-                // Solo disparar evento cuando la colisión empezó este frame
+                // Solo disparar evento cuando la colision empezo este frame
                 if (currCollisionInfo.wasCollidedLastFrame) continue;
 
                 CollisionInfo a = currCollisionInfo.GetCollInfoForBodyA();
@@ -254,7 +254,6 @@ namespace PUCV.PhysicEngine2D
         }
     }
 
-    // ================== Clases de datos de colisión ==================
 
     public class InternalCollisionInfo
     {

@@ -49,14 +49,14 @@ public class Sat2DManager : MonoBehaviour
                 }
                 else if (A.IsCircle && B.IsCircle)
                 {
-                    // Círculo vs Círculo
+                    // Círculo y Círculo
                     A.GetCircle(out var cA, out var rA);
                     B.GetCircle(out var cB, out var rB);
                     res = SAT2DMath.CircleVsCircle(cA, rA, cB, rB);
                 }
                 else
                 {
-                    // Círculo vs Polígono
+                    // Círculo y Polígono
                     Sat2DShape circ = A.IsCircle ? A : B;
                     Sat2DShape poly  = A.IsCircle ? B : A;
 
