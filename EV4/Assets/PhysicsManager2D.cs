@@ -103,21 +103,26 @@ namespace PUCV.PhysicEngine2D
             rb.velocity += globalGravity * dt;
         }
 
-      private void ApplyBuoyancyIfAny(CustomRigidbody2D rb, float dt)
-    {
-    if (_buoyancyAreas == null || _buoyancyAreas.Count == 0) return;
+        private void ApplyBuoyancyIfAny(CustomRigidbody2D rb, float dt)
+        {
+            if (_buoyancyAreas == null || _buoyancyAreas.Count == 0) return;
 
-    Vector2 pos = rb.GetWorldPosition();
+            float invMass = rb.inverseMass;
+            if (invMass <= 0f) return; // kinematic 
 
-    foreach (var area in _buoyancyAreas)
-    {
-        if (area == null) continue;
-        if (!area.IsInside(pos)) continue;
+            Vector2 pos = rb.GetWorldPosition();
 
-        Vector2 force = area.ComputeBuoyancyForce(rb);
-        rb.velocity += force * dt;
-    }
-    }
+            foreach (var area in _buoyancyAreas)
+            {
+                if (area == null) continue;
+                if (!area.IsInside(pos)) continue;
+
+                Vector2 force = area.ComputeBuoyancyForce(rb);
+              
+                rb.velocity += force * invMass * dt;
+            }
+        }
+
 
         //Deteccion de colisiones 
 

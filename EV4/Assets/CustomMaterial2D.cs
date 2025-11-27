@@ -4,7 +4,7 @@ using PUCV.PhysicEngine2D;
 public class CustomMaterial2D : MonoBehaviour
 {
     [Range(0f, 1.2f)]
-    public float bounciness = 0.5f;   // 1 = perfectamente elastico, <1 = normal
+    public float bounciness = 0.5f;   
 
     [Range(0f, 1f)]
     public float friction = 0.2f;
@@ -17,7 +17,7 @@ public class CustomMaterial2D : MonoBehaviour
         float ba = ma ? ma.bounciness : 0.3f;
         float bb = mb ? mb.bounciness : 0.3f;
 
-        // Puedes usar promedio o max
+
         return (ba + bb) * 0.5f;
     }
 }

@@ -51,8 +51,7 @@ public class BuoyancyArea2D : MonoBehaviour
     public bool IsInside(Vector2 worldPos)
     {
         bool inside = _bounds.Contains(worldPos);
-        // Debug opcional para verificar
-        // Debug.Log($"Buoyancy IsInside? {inside} pos={worldPos} bounds={_bounds}");
+     
         return inside;
     }
 

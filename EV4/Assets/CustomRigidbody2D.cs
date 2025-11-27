@@ -5,11 +5,23 @@ namespace PUCV.PhysicEngine2D
     public class CustomRigidbody2D : MonoBehaviour
     {
         [Header("Estado")]
-        [Tooltip("Si es true, este cuerpo NO es afectado por gravedad ni movimiento automático.")]
+        
         public bool isKinematic = false;
-
-        [Tooltip("Si es true y no es kinematic, se le aplica gravedad global.")]
         public bool useGravity = true;
+
+        [Header("Masa")]
+        
+        [Min(0f)]
+        public float mass = 1f;
+        public float inverseMass
+        {
+            get
+            {
+                if (isKinematic || mass <= 0f)
+                    return 0f;           // infinito (no se acelera con fuerzas)
+                return 1f / mass;
+            }
+        }
 
         [Header("Movimiento")]
         public Vector2 velocity;
